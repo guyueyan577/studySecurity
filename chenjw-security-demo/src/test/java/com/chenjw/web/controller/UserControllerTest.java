@@ -31,6 +31,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.chenjw.dto.User;
+import com.fasterxml.jackson.annotation.JsonView;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserControllerTest {
@@ -73,6 +76,9 @@ public class UserControllerTest {
 	@Test
 	public void whenQuery1() throws Exception {
 		String result = mockMvc.perform(get("/user")
+				.param("size", "15")
+				.param("page", "3")
+				.param("sort", "age,desc")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)) 
 				.andExpect(status().isOk())  //期望返回的状态码
 				.andExpect(jsonPath("$.length()").value(3))  //期望返回的集合中数据数量是3个
@@ -94,11 +100,39 @@ public class UserControllerTest {
 				.param("userName", "ch")  //调用时使用参数
 				.contentType(MediaType.APPLICATION_JSON_UTF8)) 
 				.andExpect(status().isOk())  //期望返回的状态码
-				.andExpect(jsonPath("$.length()").value(3))  //期望返回的集合中数据数量是3个
 				.andReturn().getResponse().getContentAsString();  //获取返回结果的字符
 		System.out.println(result);
 	}
+	
+	/**
+	 * @Description: 获取id为1的用户的信息  
+	 * @author: chenjianwei     
+	 * @date:   2020-02-26  
+	 * @version V1.0
+	 */
+	@Test
+	public void whenGetInfo() throws Exception {
+		String result = mockMvc.perform(get("/user/1")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.userName").value("aaaWith1"))
+				.andReturn().getResponse().getContentAsString();		
+		System.out.println(result);
+	}
 
+	/**
+	 * @Description:  首先通过正则表达式验证参数   
+	 * @author: chenjianwei     
+	 * @date:   2020-02-27  
+	 * @version V1.0
+	 */
+	@Test
+	public void whenGetInfoByString() throws Exception {
+		//测试当传递的参数是非数字时，则返回错误信息
+		mockMvc.perform(get("/user/a")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(status().is4xxClientError());
+	}
 	/////////////////// 教程提供源码 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@Test
 	public void whenUploadSuccess() throws Exception {
