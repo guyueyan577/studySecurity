@@ -2,8 +2,11 @@ package com.chenjw.dto;
 
 import java.util.Date;
 
+import javax.validation.constraints.Past;
+
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.chenjw.validator.MyConstraint;
 import com.fasterxml.jackson.annotation.JsonView;
 
 public class User {
@@ -11,12 +14,13 @@ public class User {
 	public interface userSimpleView{};
 	public interface userDatailView extends userSimpleView{};
 	
-	@NotBlank
+	@NotBlank(message = "用户名不能为空")
 	private String userName;
-	@NotBlank
+	@MyConstraint
 	private String password;
 	private String id;
-	private Date birthday;
+	@Past(message = "生日必须是过去的时间")
+	private Date birthday; 
 	
 	@JsonView(userSimpleView.class)
 	public String getUserName() {

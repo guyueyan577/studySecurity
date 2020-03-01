@@ -144,7 +144,7 @@ public class UserControllerTest {
 	public void whenCreateUser() throws Exception {
 		User u = new User();
 		u.setUserName("chen1");
-//		u.setPassword("123");
+		u.setPassword("123");
 		u.setBirthday(new Date());
 		String content = JSONObject.toJSONString(u);
 		String result = mockMvc.perform((post("/user")).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -155,9 +155,44 @@ public class UserControllerTest {
 		System.out.println(result);
 	}
 	
+	/**
+	 * @Description:    正常的用户更新 
+	 * @author: chenjianwei     
+	 * @date:   2020-03-01  
+	 * @version V1.0
+	 */
+	@Test
+	public void whenUpdateUserCurrent() throws Exception {
+		Date currentDate = new Date();
+		updateUser(currentDate);
+	}
 	
+	/**
+	 * @Description:    1年后的时间作为生日去更新 
+	 * @author: chenjianwei     
+	 * @date:   2020-03-01  
+	 * @version V1.0
+	 */
+	@Test
+	public void whenUpdateUserAfterYear() throws Exception {
+		//1年以后的时间
+		Date date = new Date(LocalDateTime.now().plusYears(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+		updateUser(date);
+	}
 	
-	
+	private void updateUser(Date birthday) throws Exception {
+		User u = new User();
+		u.setUserName("chen123");
+		u.setPassword("123456");		
+		u.setBirthday(birthday);
+		String content = JSONObject.toJSONString(u);
+		String result = mockMvc.perform((put("/user/1")).contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(content))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value("1"))
+				.andReturn().getResponse().getContentAsString();
+		System.out.println(result);
+	}
 	
 	
 	
