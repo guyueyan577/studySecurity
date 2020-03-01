@@ -3,10 +3,15 @@ package com.chenjw.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +30,7 @@ public class UserController {
 			User u = new User();
 			u.setUserName("aaa" + i);
 			u.setPassword("123");
-			
+			u.setId("1");
 			result.add(u);
 		}		
 		return result;
@@ -38,8 +43,7 @@ public class UserController {
 			User u = new User();
 			u.setUserName("aaa");
 			u.setPassword("123");
-			
-			
+			u.setId("1");
 		return u;
 	}
 	
@@ -49,9 +53,19 @@ public class UserController {
 		
 			User u = new User();
 			u.setUserName("aaaWith1" );
-			u.setPassword("1");
-			
-			
+			u.setPassword("123");	
+			u.setId("1");
+		return u;
+	}
+	
+	@PostMapping("/user")
+	public User createUser(@Valid @RequestBody User u, BindingResult erros) {
+		if (erros.hasErrors()) {
+			//如果验证有错误则进行输出
+			erros.getAllErrors().stream().forEach(error->System.out.println(error.getDefaultMessage()));
+		}
+		
+		u.setId("1");
 		return u;
 	}
 }

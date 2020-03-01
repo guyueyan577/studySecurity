@@ -26,16 +26,21 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chenjw.dto.User;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class UserControllerTest {
 
 	@Autowired
@@ -133,6 +138,41 @@ public class UserControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(status().is4xxClientError());
 	}
+	
+	
+	@Test
+	public void whenCreateUser() throws Exception {
+		User u = new User();
+		u.setUserName("chen1");
+//		u.setPassword("123");
+		u.setBirthday(new Date());
+		String content = JSONObject.toJSONString(u);
+		String result = mockMvc.perform((post("/user")).contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(content))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value("1"))
+				.andReturn().getResponse().getContentAsString();
+		System.out.println(result);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/////////////////// 教程提供源码 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@Test
 	public void whenUploadSuccess() throws Exception {
