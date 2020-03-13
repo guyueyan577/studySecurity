@@ -1,4 +1,4 @@
-package com.chenjw.security.securityweb;
+package com.chenjw.security;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
