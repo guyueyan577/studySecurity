@@ -49,7 +49,9 @@ public class MyUserDetailService implements UserDetailsService {
 		String authorityList = "admin,user,root";
 //		UserDetails userDetail = new User(user.getUserName(), user.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList(authorityList));
 		
+		//加过密的密码
 		String encoderPassword = passwordEncoder.encode(user.getPassword());
+		
 		log.info("加密后的密码为：" + encoderPassword);
 		UserDetails userDetail = new User(user.getUserName(), encoderPassword, 
 				user.isEnabled(), user.isAccountNonExpired(), user.isCredentialsNonExpired(), user.isAccountNonLocked(),
